@@ -1,7 +1,7 @@
 
 function main(){
     //ler ficheiro CSV -> comma separated value
-    const data = d3.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTtFUr7WvZBD9hyNvZYSrGrVhPjtD725nO6fKxRRlaF-u59e_jjnwOEZV4MXr2pq3TIoCWjJxWmAP5z/pub?gid=716709556&single=true&output=csv", d3.autoType);
+    const data = d3.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSbtuhEnvIyILgH3dwOEypQFPlo4bVJ64dH3ok870dcoeh13RRCgGFmuPeZPvJqaI8XgZsMe6Ck8aOl/pub?output=csv", d3.autoType);
     var ids = []
     var media1
     var mediaAntes
@@ -619,6 +619,7 @@ var caminho2 = "M122.405937,242.241241 "
                 ratingsAntes.push(element.antes);
                 ratingsApos.push(element.apos);
                 ids.push(element.id);
+                
             }
 
             var usedIds = []
@@ -653,7 +654,7 @@ var caminho2 = "M122.405937,242.241241 "
             }
      
             //SORT THE ARRAY
-            ids.sort(function(a, b){return a - b})
+            //ids.sort(function(a, b){return a - b})
 
             //TITULO
             var svgTitle = d3.select("#div0")
@@ -909,9 +910,20 @@ var caminho2 = "M122.405937,242.241241 "
                 var ratingsGaleria = []
                 var ratingsProject = []
 
+                var ratingsExteriorCount = 0
+                var ratingsOvalCount = 0
+                var ratingsVideoCount = 0
+                var ratingsGaleriaCount = 0
+                var ratingsProjectCount = 0
+
                 
                 var futures = []
                 var visits = []
+                var visitsExterior = []
+                var visitsOval = []
+                var visitsVideo = []
+                var visitsGaleria = []
+                var visitsProject = []
                 var justificationsExterior = []
                 var justificationsOval = []
                 var justificationsVideo = []
@@ -929,10 +941,46 @@ var caminho2 = "M122.405937,242.241241 "
                     ratingsGaleria.push(element.ratingGaleria);
                     ratingsProject.push(element.ratingProject);
 
+                    //NON NULL RATINGS
+                    if(element.ratingExterior != null){
+                        ratingsExteriorCount += 1
+                    }
+                    if(element.ratingOval != null){
+                        ratingsOvalCount += 1
+                    }
+                    if(element.ratingVideo != null){
+                        ratingsVideoCount += 1
+                    }
+                    if(element.ratingGaleria != null){
+                        ratingsGaleriaCount += 1
+                    }
+                    if(element.ratingProject != null){
+                        ratingsProjectCount += 1
+                    }
+
                     //FUTURES
                     futures.push(element.future);
                     //VISITAS
-                    visits.push(element.visita);
+                    if( element.visitaE == 'Sim'){
+                        visits.push('Exterior do museu')
+                    }
+                    if( element.visitaO == 'Sim'){
+                        visits.push('Sala Oval')
+                    }
+                    if( element.visitaV == 'Sim'){
+                        visits.push('Video Room')
+                    }
+                    if( element.visitaG == 'Sim'){
+                        visits.push('Galeria Principal')
+                    }
+                    if( element.visitaP == 'Sim'){
+                        visits.push('Project Room')
+                    }
+                    visitsExterior.push(element.visitaE)
+                    visitsOval.push(element.visitaS)
+                    visitsVideo.push(element.visitaV)
+                    visitsGaleria.push(element.visitaG)
+                    visitsProject.push(element.visitaP)
                     justificationsExterior.push(element.justificacaoExterior)
                     justificationsOval.push(element.justificacaoOval)
                     justificationsVideo.push(element.justificacaoVideo)
@@ -949,32 +997,32 @@ var caminho2 = "M122.405937,242.241241 "
 
                 //CALCULAR MEDIA EXTERIOR
                 mediaE = d3.sum(ratingsExterior);
-                var mediaExterior = mediaE / ratingsExterior.length;
+                var mediaExterior = mediaE / ratingsExteriorCount;
 
                 //CALCULAR MEDIA OVAL
                 mediaO = d3.sum(ratingsOval);
-                var mediaOval = mediaO / ratingsOval.length;
+                var mediaOval = mediaO / ratingsOvalCount;
 
                 //CALCULAR MEDIA VIDEO
                 mediaV = d3.sum(ratingsVideo);
-                var mediaVideo = mediaV / ratingsVideo.length;
+                var mediaVideo = mediaV / ratingsVideoCount;
                 
                 //CALCULAR MEDIA GALERIA
                 mediaG = d3.sum(ratingsGaleria);
-                var mediaGaleria = mediaG / ratingsGaleria.length;
+                var mediaGaleria = mediaG / ratingsGaleriaCount;
 
                 //CALCULAR MEDIA PROJECT
                 mediaP = d3.sum(ratingsProject);
-                var mediaProject = mediaP / ratingsProject.length;
+                var mediaProject = mediaP / ratingsProjectCount;
 
-                var corExterior = 0
-                var corOval = 0
-                var corVideo = 0
-                var corGaleria = 0
-                var corProject = 0
+                var corExterior = 'white'
+                var corOval = 'white'
+                var corVideo = 'white'
+                var corGaleria = 'white'
+                var corProject = 'white'
 
                 //CORES EXTERIOR
-                if(mediaExterior >= 0 && mediaExterior < 1.5){
+                if(mediaExterior > 0 && mediaExterior < 1.5){
                     corExterior = '#F60D0D';
                 } else if (mediaExterior >= 1.5 && mediaExterior < 2.5){
                     corExterior = "#FF9900";
@@ -987,7 +1035,7 @@ var caminho2 = "M122.405937,242.241241 "
                 }
 
                 //CORES OVAL
-                if(mediaOval >= 0 && mediaOval < 1.5){
+                if(mediaOval > 0 && mediaOval < 1.5){
                     corOval = '#F60D0D';
                 } else if (mediaOval >= 1.5 && mediaOval < 2.5){
                     corOval = "#FF9900";
@@ -1000,7 +1048,7 @@ var caminho2 = "M122.405937,242.241241 "
                 }
 
                 //CORES VIDEO
-                if(mediaVideo>= 0 && mediaVideo < 1.5){
+                if(mediaVideo> 0 && mediaVideo < 1.5){
                     corVideo = '#F60D0D';
                 } else if (mediaVideo >= 1.5 && mediaVideo < 2.5){
                     corVideo = "#FF9900";
@@ -1013,7 +1061,7 @@ var caminho2 = "M122.405937,242.241241 "
                 }
 
                 //CORES GALERIA
-                if(mediaGaleria >= 0 && mediaGaleria < 1.5){
+                if(mediaGaleria > 0 && mediaGaleria < 1.5){
                     corGaleria = '#F60D0D';
                 } else if (mediaGaleria >= 1.5 && mediaGaleria < 2.5){
                     corGaleria = "#FF9900";
@@ -1026,7 +1074,7 @@ var caminho2 = "M122.405937,242.241241 "
                 }
 
                 //CORES PROJECT
-                if(mediaProject >= 0 && mediaProject < 1.5){
+                if(mediaProject > 0 && mediaProject < 1.5){
                     corProject = '#F60D0D';
                 } else if (mediaProject >= 1.5 && mediaProject < 2.5){
                     corProject = "#FF9900";
@@ -1063,19 +1111,19 @@ var caminho2 = "M122.405937,242.241241 "
                 for(let index = 0; index < d.length; index++){
                     element = d[index];
                     //se valor dif de zero, +1 visita
-                    if(element.visita.includes("Exterior do museu")){
+                    if(element.visitaE == 'Sim'){
                         countExterior += 1
                     }
-                    if(element.visita.includes("Sala Oval")){
+                    if(element.visitaO == 'Sim'){
                         countOval += 1
                     }
-                    if(element.visita.includes("Video Room")){
+                    if(element.visitaV == 'Sim'){
                         countVideo += 1
                     }
-                    if(element.visita.includes("Galeria Principal")){
+                    if(element.visitaG == 'Sim'){
                         countGaleria += 1
                     }
-                    if(element.visita.includes("Project Room")){
+                    if(element.visitaP == 'Sim'){
                         countProject += 1
                     }
                 }
@@ -1134,23 +1182,23 @@ var caminho2 = "M122.405937,242.241241 "
                         if(counts[4]['id'] == 'g') corVisitaGaleria = "#1D2268FF"
                         if(counts[4]['id'] == 'p') corVisitaProject = "#1D2268FF"
                         //MEDIO
-                        if(counts[1]['id'] == 'e') corVisitaExterior = "#669BE2FF"
-                        if(counts[1]['id'] == 'o') corVisitaOval = "#669BE2FF"
-                        if(counts[1]['id'] == 'v') corVisitaVideo = "#669BE2FF"
-                        if(counts[1]['id'] == 'g') corVisitaGaleria = "#669BE2FF"
-                        if(counts[1]['id'] == 'p') corVisitaProject = "#669BE2FF"
+                        if(counts[1]['id'] == 'e') corFutureExterior = "#FFE2BBFF"
+                        if(counts[1]['id'] == 'o') corFutureOval = "#FFE2BBFF"
+                        if(counts[1]['id'] == 'v') corFutureVideo = "#FFE2BBFF"
+                        if(counts[1]['id'] == 'g') corFutureGaleria = "#FFE2BBFF"
+                        if(counts[1]['id'] == 'p') corFutureProject = "#FFE2BBFF"
 
-                        if(counts[2]['id'] == 'e') corVisitaExterior = "#669BE2FF"
-                        if(counts[2]['id'] == 'o') corVisitaOval = "#669BE2FF"
-                        if(counts[2]['id'] == 'v') corVisitaVideo = "#669BE2FF"
-                        if(counts[2]['id'] == 'g') corVisitaGaleria = "#669BE2FF"
-                        if(counts[2]['id'] == 'p') corVisitaProject = "#669BE2FF"
+                        if(counts[2]['id'] == 'e') corFutureExterior = "#FFE2BBFF"
+                        if(counts[2]['id'] == 'o') corFutureOval = "#FFE2BBFF"
+                        if(counts[2]['id'] == 'v') corFutureVideo = "#FFE2BBFF"
+                        if(counts[2]['id'] == 'g') corFutureGaleria = "#FFE2BBFF"
+                        if(counts[2]['id'] == 'p') corFutureProject = "#FFE2BBFF"
 
-                        if(counts[3]['id'] == 'e') corVisitaExterior = "#669BE2FF"
-                        if(counts[3]['id'] == 'o') corVisitaOval = "#669BE2FF"
-                        if(counts[3]['id'] == 'v') corVisitaVideo = "#669BE2FF"
-                        if(counts[3]['id'] == 'g') corVisitaGaleria = "#669BE2FF"
-                        if(counts[3]['id'] == 'p') corVisitaProject = "#669BE2FF"
+                        if(counts[3]['id'] == 'e') corFutureExterior = "#FFE2BBFF"
+                        if(counts[3]['id'] == 'o') corFutureOval = "#FFE2BBFF"
+                        if(counts[3]['id'] == 'v') corFutureVideo = "#FFE2BBFF"
+                        if(counts[3]['id'] == 'g') corFutureGaleria = "#FFE2BBFF"
+                        if(counts[3]['id'] == 'p') corFutureProject = "#FFE2BBFF"
                     }
 
                     //VAMOS VER OS ELEMENTOS DO MEIO
@@ -1533,11 +1581,11 @@ var caminho2 = "M122.405937,242.241241 "
                                         if(countsFuture[1]['id'] == 'p') corFutureProject = "#E2CC96FF"
 
 
-                                        if(countsFuture[2]['id'] == 'e') corFutureExterior = "#669BE2FF"
-                                        if(countsFuture[2]['id'] == 'o') corFutureOval = "#669BE2FF"
-                                        if(countsFuture[2]['id'] == 'v') corFutureVideo = "#669BE2FF"
-                                        if(countsFuture[2]['id'] == 'g') corFutureGaleria = "#669BE2FF"
-                                        if(countsFuture[2]['id'] == 'p') corFutureProject = "#669BE2FF"
+                                        if(countsFuture[2]['id'] == 'e') corFutureExterior = "#E2B266FF"
+                                        if(countsFuture[2]['id'] == 'o') corFutureOval = "#E2B266FF"
+                                        if(countsFuture[2]['id'] == 'v') corFutureVideo = "#E2B266FF"
+                                        if(countsFuture[2]['id'] == 'g') corFutureGaleria = "#E2B266FF"
+                                        if(countsFuture[2]['id'] == 'p') corFutureProject = "#E2B266FF"
 
                                         if(countsFuture[3]['id'] == 'e') corFutureExterior = "#E2763DFF"
                                         if(countsFuture[3]['id'] == 'o') corFutureOval = "#E2763DFF"
