@@ -624,6 +624,8 @@ var caminho2 = "M122.405937,242.241241 "
 
             var usedIds = []
             var indexes = []
+            var tri = d3.symbol().type(d3.symbolTriangle).size(400);
+
             
 
         
@@ -706,12 +708,13 @@ var caminho2 = "M122.405937,242.241241 "
                     .style("font-weight", 800)
                     .style("font-family", "Roboto")
                     .style("font-size", '20px')
-            svg.append('circle')
-                    .attr('cx', 70)
-                    .attr('cy', 505)
-                    .attr('r', 10)
-                    .style("fill", "white")
-                    .style('stroke', "black")
+            var sym = d3.symbol().type(d3.symbolTriangle).size(200);
+            svg.append("path")
+            .attr('id', 'overall2')
+                .attr("d", sym)
+                .style("fill", "white")
+                .style('stroke', "black")
+                .attr("transform", "translate(65, 506)");
             svg.append('text')
                 .text("Média geral de todos os utilizadores")
                 .attr('x', 85)
@@ -874,21 +877,23 @@ var caminho2 = "M122.405937,242.241241 "
                 }
     
                 //CIRCLE ANTES GERAL
-                svg.append('circle')
-                    .attr('cx', cxAntes)
-                    .attr('cy', cyAntes)
-                    .attr('r', circleRadius)
-                    .style("fill", colorAntes)
-                    .style('stroke', "black")
-    
+                if(colorAntes != null){
+                    svg.append("path")
+                        .attr('id', 'circleAntes')
+                        .attr("d", tri)
+                        .style("fill", colorAntes)
+                        .style('stroke', "black")
+                        .attr("transform", "translate(" + cxAntes + ", " + cyAntes + ")");
+                    
     
                 //CIRCLE APOS GERAL
-                svg.append('circle')
-                    .attr('cx', cxApos)
-                    .attr('cy', cyApos)
-                    .attr('r', circleRadius)
-                    .style("fill", colorApos)
-                    .style('stroke', "black")
+                    svg.append("path")
+                        .attr('id', 'circleDepois')
+                        .attr("d", tri)
+                        .style("fill", colorApos)
+                        .style('stroke', "black")
+                        .attr("transform", "translate(" + cxApos + ", " + cyApos + ")");
+                }
 
 
 
